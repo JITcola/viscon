@@ -99,6 +99,7 @@ def animation_3d(pole_list, stepsize_list, colorvals, filename, xlabel, ylabel, 
     img = plt.cm.ScalarMappable(cmap="hsv")#dummy image to make colorbar
     img.set_array([])
     cbar = plt.colorbar(img, ticks = [0, 1])
+    cbar.ax.set_yticklabels(['smaller', 'larger'])
     cbar.set_label(colorbarlabel)    
     animate = animation.ArtistAnimation(fig, lines, interval = 300)
     plt.show() #this one works but for consistencys sake 
