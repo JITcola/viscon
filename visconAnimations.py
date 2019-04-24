@@ -99,9 +99,9 @@ def animation_3d(pole_list, stepsize_list, colorvals, filename, xlabel, ylabel, 
     cbar.set_label(colorbarlabel)    
     animate = animation.ArtistAnimation(fig, lines, interval = 300)
     plt.show() #this one works but for consistencys sake 
-    #animate.save(filename+".html")
+    animate.save(filename+".html")
 
-def plotpolygonalcurve(inputlist, xlabel, ylabel):
+def plotpolygonalcurve(inputlist, xlabel, ylabel, filename):
     fig = plt.figure()
     ax = plt.subplot(111)
     ax.set_xlabel(xlabel)
@@ -113,6 +113,7 @@ def plotpolygonalcurve(inputlist, xlabel, ylabel):
         y_vals = [x[1] for x in plotlist]
         line = ax.plot(x_vals, y_vals, color = colors[i], marker = 'o', label = "solution" + str(i+1))
     ax.legend()
+    plt.savefig(filename+'png')
     plt.show()
 
 
@@ -127,7 +128,8 @@ def main():
         filename = input("What would you like to call your file? ")
         animation_2d_static(pole_list, static_pole_list, filename, xlabel, ylabel)
     elif userin == 'poly':
-        plotpolygonalcurve(inputlist, xlabel, ylabel)
+        filename = input("What would you like to call your file? ")
+        plotpolygonalcurve(inputlist, xlabel, ylabel, filename)
     elif userin == '3d':
         zlabel = input("What would you like to call your additional z axis label? ")
         colorbarlabel = input("What would you like to call your colorbar? ")
