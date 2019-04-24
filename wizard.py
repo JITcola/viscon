@@ -1,13 +1,17 @@
 import sys
+import io
 import time
+import os
+import curses
 from phcutils import wiz_sols_to_phc_sols
 from phcutils import run_tracker
-import curses
 
 # Program uses curses to find terminal size, which improves
 # pretty-printing; if curses is not available, simply comment
-# out 'import curses', the defintion of get_size, and the call
-# to curses.wrapper after "if __name__ is '__main__':".
+# out 'import curses', the defintion of get_size, the call
+# to curses.wrapper after "if __name__ is '__main__':", and
+# manually adjust lines and cols so that they correspond to
+# the number of rows and columns of the terminal.
 
 lines = 0
 cols = 0
@@ -383,11 +387,17 @@ def StartTrack():
     if user_choice != "n" and user_choice != "N":
         next_screen = 7
         global tracker_data
+        original_out = (os.dup(1), os.dup(2))
+        os.dup2(os.open(os.devnull, os.O_RDWR), 1)
+        os.dup2(os.open(os.devnull, os.O_RDWR), 2)
         tracker_data.append(run_tracker(start, sols, target, sol_num,
                                         gamma, min_step, max_step, num_steps))
+        os.dup2(original_out[0], 1)
+        os.dup2(original_out[1], 2)
+        os.close(original_out[0])
+        os.close(original_out[1])
         global tracker_runs
         tracker_runs += 1
-        print(tracker_data[tracker_runs-1])  # DEBUG
     else:
         next_screen = 5
 
@@ -411,13 +421,44 @@ def TrackingComplete():
 
 
 def Visualize():
+    std_pp("")
+    title("Visualize data")
+    std_pp("")
+    text = "Which kind of plot or animation would you like to create?"
+    std_pp(text)
+    std_pp("")
+    std_pp("(1) Plot of solution curve")
+    std_pp("(2) 3D animation of path tracking")
+    std_pp("")
+    user_choice = input("\033[35;1mChoose a number: [1/2] \033[0m")
     global next_screen
-    next_screen = -1
+    if user_choice == 1:
+        next_screen = 9
+        return
+    else:
+        next_screen = 10
+        return
+
+def PlotCurve():
+    std_pp("")
+    title("Plot solution curve")
+    std_pp("")
+    text = "Solution curve has been plotted! Would you like to create more " \
+           "visualizations?"
+    std_pp("")
+    user_choice = input("\033[35;1mMore visualizations? [y/N] \033[0m")
+    global next_screen
+    if user_choice != 'n' and user_choice != 'N':
+        next_screen = 8
+        return
+    else:
+        next_screen = 11
+        return
 
 
 screens = {0: Intro, 1: StartSys, 2: Sols, 3: TargetSys, 4: Summary,
            5: TrackerSettings, 6: StartTrack, 7: TrackingComplete,
-           8: Visualize}
+           8: Visualize, 9: PlotCurve, 10: 3DAnim, 11: MoreVis}
 # 7: Farewell}
 
 if __name__ == '__main__':
