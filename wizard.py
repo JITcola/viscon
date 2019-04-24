@@ -5,6 +5,8 @@ import os
 import curses
 from phcutils import wiz_sols_to_phc_sols
 from phcutils import run_tracker
+from visconAnimations import plotpolygonalcurve
+from visconAnimations import animation_3d
 
 # Program uses curses to find terminal size, which improves
 # pretty-printing; if curses is not available, simply comment
@@ -93,6 +95,7 @@ tracker_runs = 0
 tracker_data = []
 visual_opts = []
 visited = {i: 0 for i in range(8)}
+total_vis = 0
 
 sol_num = 0
 gamma = 0
@@ -415,6 +418,9 @@ def TrackingComplete():
                         "[Y/n] \033[0m")
     global next_screen
     if user_choice != "n" and user_choice != "N":
+        vis_path = os.getcwd()
+        vis_path += "/tracker_run_{}".format(tracker_runs)
+        os.mkdir(vis_path)
         next_screen = 8
     else:
         next_screen = -1
@@ -431,8 +437,15 @@ def Visualize():
     std_pp("(2) 3D animation of path tracking")
     std_pp("")
     user_choice = input("\033[35;1mChoose a number: [1/2] \033[0m")
+    global total_vis
+    total_vis += 1
     global next_screen
     if user_choice == 1:
+        vis_path = os.getcwd()
+        vis_path += "/tracker_run_{}".format(tracker_runs)
+        vis_path += "/vis_{}".format(total_vis) 
+        plotpolygonalcurve(tracker_data[tracker_runs-1][2][0], "Real part",
+                           "Imaginary part", vis_path)
         next_screen = 9
         return
     else:
@@ -445,6 +458,7 @@ def PlotCurve():
     std_pp("")
     text = "Solution curve has been plotted! Would you like to create more " \
            "visualizations?"
+    std_pp(text)
     std_pp("")
     user_choice = input("\033[35;1mMore visualizations? [y/N] \033[0m")
     global next_screen
@@ -456,9 +470,21 @@ def PlotCurve():
         return
 
 
+def MoreVis():
+    std_pp("")
+    title("Track more solutions")
+    std_pp("")
+    text = "Would you like to run the path tracker again?"
+    std_pp(text)
+    std("")
+    input("")
+    global next_screen
+    next_screen = -1
+
+
 screens = {0: Intro, 1: StartSys, 2: Sols, 3: TargetSys, 4: Summary,
            5: TrackerSettings, 6: StartTrack, 7: TrackingComplete,
-           8: Visualize, 9: PlotCurve, 10: 3DAnim, 11: MoreVis}
+           8: Visualize, 9: PlotCurve, 10: Anim3D, 11: MoreVis}
 # 7: Farewell}
 
 if __name__ == '__main__':
