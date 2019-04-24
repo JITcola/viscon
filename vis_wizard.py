@@ -134,7 +134,7 @@ def Visualize():
     std_pp("(1) Plot of all solution curves (superimposed)")
     std_pp("(2) 3D animation of path tracking (single solution)")
     std_pp("")
-    user_choice = input("\033[35;1mChoose a number: [1/2/3] \033[0m")
+    user_choice = input("\033[35;1mChoose a number: [1/2] \033[0m")
     global next_screen
     if user_choice == "2":
         std_pp("")
