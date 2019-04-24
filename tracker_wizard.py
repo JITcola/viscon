@@ -2,6 +2,7 @@ import sys
 import io
 import time
 import os
+import pickle
 import curses
 from phcutils import wiz_sols_to_phc_sols
 from phcutils import run_tracker
@@ -398,9 +399,7 @@ def StartTrack():
         os.dup2(original_out[1], 2)
         os.close(original_out[0])
         os.close(original_out[1])
-        f = open("tracker_data.dat", "w")
-        f.write(str(tracker_data))
-        f.close()
+        pickle.dump(tracker_data, open("tracker_data.dat", "wb"))
         global tracker_runs
         tracker_runs += 1
     else:
