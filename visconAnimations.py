@@ -80,6 +80,9 @@ def animation_2d_static(pole_list, static_pole_list, filename, xlabel, ylabel): 
     animate.save(filename+".html")
     
 def animation_3d(pole_list, stepsize_list, colorvals, filename, xlabel, ylabel, zlabel, colorbarlabel):
+    colorvals = set(colorvals)
+    colorvals = list(colorvals) #ugly 
+    colorvals.sort() #hacky way to make colormap work for big data
     fig = plt.figure(figsize =(9, 6))
     ax = fig.gca(projection = '3d')
     ax.set_xlabel(xlabel)
