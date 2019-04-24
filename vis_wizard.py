@@ -132,16 +132,31 @@ def Visualize():
     std_pp(text)
     std_pp("")
     std_pp("(1) Plot of all solution curves (superimposed)")
-    std_pp("(2) 3D animation of path tracking")
+    std_pp("(2) 3D animation of path tracking (single solution)")
+    std_pp("")
     user_choice = input("\033[35;1mChoose a number: [1/2/3] \033[0m")
     global next_screen
-    if user_choice == 2:
-        vis_path = os.getcwd()
-        vis_path += "/tracker_run_{}".format(tracker_runs)
-        vis_path += "/vis_{}".format(total_vis) 
-        plotpolygonalcurve(tracker_data[tracker_runs-1][2][0], "Real part",
-                           "Imaginary part", vis_path)
-        next_screen = 9
+    if user_choice == "2":
+        std_pp("")
+        text = "Which solution? Type a number between 1 and {} inclusive, " \
+               "then press Enter.".format(len(tracker_data))
+        std_pp(text)
+        std_pp("")
+        user_choice = -1
+        while user_choice not in range(1, len(tracker_data)+1):
+           user_choice = int(input("\033[35;1mSolution: \033[0m"))
+        user_choice -= 1
+        curve_points = tracker_data[user_choice][2][0]
+        step_sizes = tracker_data[user_choice][1]
+        color_vals = sorted(step_sizes)
+        filename = "solution_{}_anim".format(user_choice+1)
+        xlabel = "Real part"
+        ylabel = "Imaginary part"
+        zlabel = "Step size"
+        colorbarlabel = "Step size"
+        animation_3d(curve_points, step_sizes, color_vals, filename,
+                     xlabel, ylabel, zlabel, colorbarlabel)
+        next_screen = -1
         return
     else:
         solution_curves = [tracker_data[i][2][0] for i in range(len(tracker_data))]
@@ -171,18 +186,6 @@ def PlotCurves():
 def Anim3D():
    global next_screen
    next_screen = -1
-
-
-def MoreVis():
-    std_pp("")
-    title("Track more solutions")
-    std_pp("")
-    text = "Would you like to run the path tracker again?"
-    std_pp(text)
-    std("")
-    input("")
-    global next_screen
-    next_screen = -1
 
 
 screens = {0: Intro, 1: Visualize, 2: PlotCurves, 3: Anim3D}
