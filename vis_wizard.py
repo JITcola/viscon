@@ -145,7 +145,6 @@ def Visualize():
         return
     else:
         solution_curves = [tracker_data[i][2][0] for i in range(len(tracker_data))]
-        print(solution_curves)
         plotpolygonalcurve(solution_curves, "Real part", "Imaginary part",
                            "allcurves")
         next_screen = -1
