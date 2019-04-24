@@ -154,8 +154,15 @@ def Visualize():
         ylabel = "Imaginary part"
         zlabel = "Step size"
         colorbarlabel = "Step size"
+        original_out = (os.dup(1), os.dup(2))
+        os.dup2(os.open(os.devnull, os.O_RDWR), 1)
+        os.dup2(os.open(os.devnull, os.O_RDWR), 2)
         animation_3d(curve_points, step_sizes, color_vals, filename,
                      xlabel, ylabel, zlabel, colorbarlabel)
+        os.dup2(original_out[0], 1)
+        os.dup2(original_out[1], 2)
+        os.close(original_out[0])
+        os.close(original_out[1])
         next_screen = -1
         return
     else:
